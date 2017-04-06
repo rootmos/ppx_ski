@@ -9,3 +9,7 @@ ppx_ski.native: src/ppx_ski.ml
 parsetree:
 	ocamlc -dparsetree snippet.ml
 	rm snippet.cm*
+
+.PHONY: utop
+utop:
+	utop -ppx ./ppx_ski.native
