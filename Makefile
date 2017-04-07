@@ -10,6 +10,10 @@ parsetree:
 	ocamlc -dparsetree snippet.ml
 	rm snippet.cm*
 
+.PHONY: dumpast
+dumpast:
+	ocamlfind ppx_tools/dumpast snippet.ml
+
 .PHONY: utop
 utop:
 	utop -ppx ./ppx_ski.native

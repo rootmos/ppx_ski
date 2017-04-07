@@ -22,10 +22,23 @@ let transform e =
 
 let ski_mapper argv =
   { default_mapper with
-    expr = fun mapper expr -> match expr with
-      | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some ""))} ->
-          parse raw_ski |> transform
-      | x -> default_mapper.expr mapper x;
+    expr = (fun mapper expr ->
+      match expr with
+        | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some "sk"))} ->
+            parse raw_ski |> transform
+        | x -> default_mapper.expr mapper x);
+    structure_item = fun mapper str ->
+      begin match str with
+        | { pstr_desc = Pstr_extension (({txt="ski"}, PStr [{pstr_desc = Pstr_value (rec_flag, [b])}]), _)} ->
+            begin match b with
+            | { pvb_pat = d; pvb_expr = { pexp_desc = Pexp_construct ({txt = Lident raw_ski}, _)} } ->
+                begin let ski = parse raw_ski |> transform in
+                [%stri let [%p d] = (fun x -> [%e ski] x)]
+                end
+            | _ -> failwith "ops!"
+            end
+        | x -> default_mapper.structure_item mapper x
+      end;
   }
 
 let () = register "ski" ski_mapper
