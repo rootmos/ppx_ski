@@ -21,7 +21,11 @@ let ski_ast_to_ocaml_ast e =
   go e
 
 let rec ocaml_ast_to_ski_ast = function
-  | Pexp_construct ({txt = Lident raw_ski}, _) -> parse raw_ski
+  | Pexp_construct ({txt = Lident raw_ski}, None) -> parse raw_ski
+  | Pexp_construct ({txt = Lident raw_ski}, Some e) ->
+      let l = parse raw_ski in
+      let r = ocaml_ast_to_ski_ast e.pexp_desc in
+      Ast.Tree ([l; r])
   | Pexp_apply ({pexp_desc = f}, xs) ->
       let f' = ocaml_ast_to_ski_ast f in
       let ys = Misc.map_end (fun (_, d) -> ocaml_ast_to_ski_ast d.pexp_desc) xs [] in
