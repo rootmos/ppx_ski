@@ -36,7 +36,7 @@ let ski_mapper argv =
   { default_mapper with
     expr = (fun mapper expr ->
       match expr with
-        | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some "sk"))} ->
+        | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some ""))} ->
             parse raw_ski |> ski_ast_to_ocaml_ast
         | x -> default_mapper.expr mapper x);
     structure_item = fun mapper str ->
