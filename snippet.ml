@@ -1,5 +1,6 @@
-let _ = {|SKK|}
+let f a = {|SKKa|}
+let f = {|SKK|}
 
-let%ski f = (SK)K
+let thrush a b = {|((S(K(S((SK)K))))K)ab|}
 
-let%ski i = S(KK)
+let warbler a b = {|((S(K(S((S(K((S((SK)K))((SK)K))))((S(K((S(KS))K)))((S(K(S((SK)K))))K))))))K)ab|}
