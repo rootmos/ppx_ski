@@ -37,7 +37,8 @@ let derive ast =
         Tree (x :: ts') |> step |> log' "K"
     | Tree (Op S :: x :: y :: z :: ts') ->
         Tree (x :: z :: Tree [y; z] :: ts') |> step |> log' "S"
-    | t -> log' "  " t in
+    | Tree ts ->
+        Tree (List.map step ts) |> log' "fβ" in
   go 0 ast
 
 let merge a b = match (a, b) with
