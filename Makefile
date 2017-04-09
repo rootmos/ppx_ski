@@ -25,3 +25,7 @@ utop: ppx_ski.native sk.cma
 .PHONY: clean
 clean:
 	ocamlbuild -clean
+
+.PHONY: example
+example:
+	ocamlbuild -use-ocamlfind example.native && ./example.native

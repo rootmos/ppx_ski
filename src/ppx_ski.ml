@@ -25,10 +25,10 @@ let rec embedd_sk_ast = function
       [%expr `Tree [%e es]]
 
 let rec ocaml_ast_to_sk_ast = function
-  | Pexp_ident {txt = Lident raw_sk} -> Sk.parse raw_sk |> Sk.embedd
-  | Pexp_construct ({txt = Lident raw_sk}, None) -> Sk.parse raw_sk |> Sk.embedd
+  | Pexp_ident {txt = Lident raw_sk} -> Sk.parse raw_sk
+  | Pexp_construct ({txt = Lident raw_sk}, None) -> Sk.parse raw_sk
   | Pexp_construct ({txt = Lident raw_sk}, Some e) ->
-      let l = Sk.parse raw_sk |> Sk.embedd in
+      let l = Sk.parse raw_sk in
       let r = ocaml_ast_to_sk_ast e.pexp_desc in
       `Tree [l; r]
   | Pexp_apply ({pexp_desc = f}, xs) ->
@@ -36,7 +36,7 @@ let rec ocaml_ast_to_sk_ast = function
       xs
         |> List.map (fun (_, d) -> d.pexp_desc)
         |> List.map ocaml_ast_to_sk_ast
-        |> List.fold_left Sk.merge' f'
+        |> List.fold_left Sk.merge f'
   | _ -> failwith "unexpected syntax in SKI-expression!"
 
 let ski_mapper argv =
@@ -44,14 +44,14 @@ let ski_mapper argv =
     expr = (fun mapper expr ->
       match expr with
         | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some ""))} ->
-            Sk.parse raw_ski |> Sk.derive |> Sk.embedd |> embedd_sk_ast
+            Sk.parse raw_ski |> embedd_sk_ast
         | x -> default_mapper.expr mapper x);
     structure_item = fun mapper str ->
       begin match str with
         | { pstr_desc = Pstr_extension (({txt="ski"}, PStr [{pstr_desc = Pstr_value (rec_flag, [b])}]), _)} ->
             begin match b with
             | { pvb_pat = {ppat_desc = Ppat_construct ({txt = Lident d}, None)}; pvb_expr = { pexp_desc = pd }} ->
-                let ski = ocaml_ast_to_sk_ast pd |> Sk.lift |> Sk.derive |> Sk.embedd |> embedd_sk_ast in
+                let ski = ocaml_ast_to_sk_ast pd |> embedd_sk_ast in
                 let d' = mangle_combinator_name d |> string_to_pattern in
                 [%stri let [%p d'] = [%e ski]]
             | _ -> failwith "unexpected pattern"
