@@ -16,9 +16,9 @@ expr:
   ;
 
 inner_expr:
-  | K { Ast.Op Ast.K }
-  | S { Ast.Op Ast.S }
-  | I { Ast.Op Ast.I }
-  | s = ATOM { Ast.Op (Ast.Atom s) }
+  | K { Ast.K }
+  | S { Ast.S }
+  | I { Ast.Tree [Ast.S; Ast.K; Ast.K] }
+  | s = ATOM { Ast.Atom s }
   | LEFT_PAREN; xs = list(inner_expr); RIGHT_PAREN { Ast.Tree xs }
   ;

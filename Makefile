@@ -17,3 +17,7 @@ dumpast:
 .PHONY: utop
 utop:
 	utop -ppx ./ppx_ski.native
+
+.PHONY: clean
+clean:
+	rm -rf _build
