@@ -1,31 +1,34 @@
 ppx_ski
 =======
-[SKI](https://en.wikipedia.org/wiki/SKI_combinator_calculus) as a shallow embedding into OCaml using ppx extensions.
+[SKI combinator calculus](https://en.wikipedia.org/wiki/SKI_combinator_calculus) implemented in OCaml supported by a ppx extension.
 
 Syntax
 ------
 The new syntaxes introduced by `ppx_ski` are:
-* `let%ski f = <SKI-expression>`, and
-* `{|SKI-expression|}`.
+* `let%ski C = <SKI-expression>`
+* `{|SKI-expression|}`
 
 Examples
 --------
 Examples of some [birds](http://www.angelfire.com/tx4/cus/combinator/birds.html):
 
 ```
-utop # let%ski kestrel = K;;
-val kestrel : 'a -> 'b -> 'a = <fun>
+open Birds
+
+let () =
+  let f a b = {|KIab|} in f 1 2
+    |> Sk.derive' string_of_int |> Sk.to_string' string_of_int |> print_endline;
+
+  let m a = {|SIIa|} in m "x"
+    |> Sk.derive |> Sk.to_string |> print_endline;
+
+  (fun a b c -> {|Cabc|}) "a" "b" "c"
+    |> Sk.derive |> Sk.to_string |> print_endline;
+
+  (fun a b -> {|Lab|}) "a" "b"
+    |> Sk.derive |> Sk.to_string |> print_endline
 ```
 
-```
-utop # let%ski kite = KI;;
-val kite : 'a -> 'b -> 'b = <fun>
-```
-
-```
-utop # {|(S(K(S((SK)K))))K|};;
-- : '_a -> ('_a -> '_b) -> '_b
-```
 
 References
 ----------
