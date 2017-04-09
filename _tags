@@ -1,3 +1,4 @@
 true: use_menhir
-<src/*>: package(ppx_tools.metaquot),package(compiler-libs.common)
+<src/*>: use_sk,package(ppx_tools.metaquot),package(compiler-libs.common)
 <src>: include
+<sk>: include

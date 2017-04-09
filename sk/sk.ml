@@ -1,4 +1,4 @@
-open Ast
+open Sk_ast
 
 let rec to_string = function
   | S -> "S"
@@ -40,3 +40,15 @@ let merge a b = match (a, b) with
   | oa, ob -> Tree [oa; ob]
 
 let parse s = Lexing.from_string s |> Ski_parser.expr Ski_lexer.read
+
+let rec lift = function
+  | `K -> K
+  | `S -> S
+  | `Atom s -> Atom s
+  | `Tree xs -> Tree (List.map lift xs)
+
+let rec embedd = function
+  | Sk_ast.S -> `S
+  | Sk_ast.K -> `K
+  | Sk_ast.Atom s -> `Atom s
+  | Sk_ast.Tree xs -> `Tree (List.map embedd xs)
