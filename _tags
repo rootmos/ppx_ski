@@ -2,5 +2,6 @@ true: use_menhir
 <src/*>: package(ppx_tools.metaquot),package(compiler-libs.common)
 <src>: include
 <sk>: include
+<repl>: include
 <examples/*>: ppx(../ppx_ski.native)
 <examples>: include

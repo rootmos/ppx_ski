@@ -59,4 +59,14 @@ end) = struct
 end
 
 module Int = F(struct type t = int let to_string = string_of_int end)
-module String = F(struct type t = string let to_string s = s end)
+module String = struct
+  include F(struct type t = string let to_string s = s end)
+
+  let rec repl () =
+    print_string "SKI> ";
+    try read_line () |> parse |> eval_print; repl ()
+    with
+      | Sys.Break -> ()
+      | End_of_file -> ()
+      | e -> Printexc.to_string e |> print_endline; repl ()
+end

@@ -9,6 +9,21 @@ The new syntaxes introduced by `ppx_ski` are:
 * `{|SKI-expression|}`
 * `{l|SKI-expression|l}` (which returns a lambda)
 
+REPL
+----
+There's a simple `repl` included to let you evaluate SKI-expressions.
+To build it: run `make repl` (just a `Makefile` wrapper around `ocamlbuild`).
+
+```
+SKI> ((S((SK)K))((SK)K))a
+(a(a))
+SKI> ((S(K((S((S(K((S(KS))K)))S))(KK))))((S(K(S((SK)K))))K))abc
+(c(a)(b))
+SKI>
+```
+
+Setting the environment variable `SKI_LOG=1` will show the derivations as they happen.
+
 Examples
 --------
 Examples of some [birds](http://www.angelfire.com/tx4/cus/combinator/birds.html):
@@ -31,7 +46,7 @@ let open Birds in
     (* prints: (a(b(b))) *)
 ```
 
-The curious can set the environment variable `SKI_LOG=1` and see the derivations as they happen.
+The curious can set the environment variable `SKI_LOG=1` here as well to see what's going on under the hood.
 
 
 References
