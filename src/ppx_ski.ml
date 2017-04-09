@@ -28,10 +28,10 @@ let rec embedd_sk_ast = function
       [%expr `Tree [%e es]]
 
 let rec ocaml_ast_to_sk_ast = function
-  | Pexp_ident {txt = Lident raw_sk} -> Sk.parse raw_sk
-  | Pexp_construct ({txt = Lident raw_sk}, None) -> Sk.parse raw_sk
+  | Pexp_ident {txt = Lident raw_sk} -> Sk.String.parse raw_sk
+  | Pexp_construct ({txt = Lident raw_sk}, None) -> Sk.String.parse raw_sk
   | Pexp_construct ({txt = Lident raw_sk}, Some e) ->
-      let l = Sk.parse raw_sk in
+      let l = Sk.String.parse raw_sk in
       let r = ocaml_ast_to_sk_ast e.pexp_desc in
       `Tree [l; r]
   | Pexp_apply ({pexp_desc = f}, xs) ->
@@ -39,7 +39,7 @@ let rec ocaml_ast_to_sk_ast = function
       xs
         |> List.map (fun (_, d) -> d.pexp_desc)
         |> List.map ocaml_ast_to_sk_ast
-        |> List.fold_left Sk.merge f'
+        |> List.fold_left Sk.String.merge f'
   | _ -> failwith "unexpected syntax in SKI-expression!"
 
 let ski_mapper argv =
@@ -47,15 +47,15 @@ let ski_mapper argv =
     expr = (fun mapper expr ->
       match expr with
         | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some ""))} ->
-            let sk = Sk.parse raw_ski in
-            let fv = Sk.free sk in
+            let sk = Sk.String.parse raw_ski in
+            let fv = Sk.String.free sk in
             let rec wrap = function
               | [] -> embedd_sk_ast sk
               | v :: vs -> [%expr ((fun [%p string_to_pattern v] -> [%e wrap vs]) [%e string_to_constant v])] in
             wrap fv
         | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some "l"))} ->
-            let sk = Sk.parse raw_ski in
-            let fv = Sk.free sk in
+            let sk = Sk.String.parse raw_ski in
+            let fv = Sk.String.free sk in
             let rec wrap = function
               | [] -> embedd_sk_ast sk
               | v :: vs -> [%expr (fun [%p string_to_pattern v] -> [%e wrap vs])] in
