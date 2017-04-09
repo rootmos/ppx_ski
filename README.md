@@ -12,7 +12,7 @@ Examples
 --------
 Examples of some [birds](http://www.angelfire.com/tx4/cus/combinator/birds.html):
 
-```
+```ocaml
 open Birds
 
 let () =
