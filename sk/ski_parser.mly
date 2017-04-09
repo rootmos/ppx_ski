@@ -4,6 +4,7 @@
 %token K
 %token I
 %token <string> ATOM
+%token <string> COMBINATOR
 %token EOF
 
 %start <Sk_ast.expr> expr
@@ -20,5 +21,6 @@ inner_expr:
   | S { Sk_ast.S }
   | I { Sk_ast.Tree [Sk_ast.S; Sk_ast.K; Sk_ast.K] }
   | s = ATOM { Sk_ast.Atom s }
+  | c = COMBINATOR { Sk_ast.Combinator c }
   | LEFT_PAREN; xs = list(inner_expr); RIGHT_PAREN { Sk_ast.Tree xs }
   ;

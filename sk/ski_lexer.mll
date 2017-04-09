@@ -4,7 +4,11 @@
   exception Syntax_error of string
 }
 
-let atom_initial_char = (['A'-'Z']#['S' 'K' 'I']) | ['a'-'z']
+let combinator_initial_char = ['A'-'Z']#['S' 'K' 'I']
+let combinator_subsequent_char = ['0' - '9']
+let combinator = combinator_initial_char combinator_subsequent_char*
+
+let atom_initial_char = ['a'-'z']
 let atom_subsequent_char = ['0' - '9']
 let atom = atom_initial_char atom_subsequent_char*
 
@@ -15,6 +19,7 @@ rule read = parse
   | 'K' { K }
   | 'I' { I }
   | atom { ATOM (L.lexeme lexbuf) }
+  | combinator { COMBINATOR (L.lexeme lexbuf) }
   | eof { EOF }
   | _ { raise (Syntax_error ("Unknown character: " ^ L.lexeme lexbuf)) }
 

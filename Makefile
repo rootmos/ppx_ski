@@ -2,7 +2,7 @@
 snippet: ppx_ski.native
 	ocamlfind ppx_tools/rewriter ./$< snippet.ml
 
-ppx_ski.native: src/*.ml*
+ppx_ski.native: src/*.ml* sk/*.ml*
 	ocamlbuild -use-ocamlfind $@
 
 .PHONY: sk.cma

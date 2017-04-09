@@ -4,6 +4,7 @@ let rec to_string = function
   | S -> "S"
   | K -> "K"
   | Atom a -> a
+  | Combinator c -> c
   | Tree ts ->
       let s = List.map to_string ts |> String.concat "" in
       "(" ^ s ^ ")"
@@ -39,16 +40,24 @@ let merge a b = match (a, b) with
   | oa, Tree tb -> Tree (List.append [oa] tb)
   | oa, ob -> Tree [oa; ob]
 
+let merge' a b = match (a, b) with
+  | `Tree ta, `Tree tb -> `Tree (List.append ta tb)
+  | `Tree ta, ob -> `Tree (List.append ta [ob])
+  | oa, `Tree tb -> `Tree (List.append [oa] tb)
+  | oa, ob -> `Tree [oa; ob]
+
 let parse s = Lexing.from_string s |> Ski_parser.expr Ski_lexer.read
 
 let rec lift = function
   | `K -> K
   | `S -> S
   | `Atom s -> Atom s
+  | `Combinator c -> Combinator c
   | `Tree xs -> Tree (List.map lift xs)
 
 let rec embedd = function
   | Sk_ast.S -> `S
   | Sk_ast.K -> `K
   | Sk_ast.Atom s -> `Atom s
+  | Sk_ast.Combinator c -> `Combinator c
   | Sk_ast.Tree xs -> `Tree (List.map embedd xs)
