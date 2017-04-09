@@ -7,6 +7,7 @@ Syntax
 The new syntaxes introduced by `ppx_ski` are:
 * `let%ski C = <SKI-expression>`
 * `{|SKI-expression|}`
+* `{l|SKI-expression|l}` (which returns a lambda)
 
 Examples
 --------
@@ -14,22 +15,22 @@ Examples of some [birds](http://www.angelfire.com/tx4/cus/combinator/birds.html)
 
 ```ocaml
 (* kite returns second argument *)
-{|KIab|} 1 2
-  |> Sk.derive' string_of_int |> Sk.to_string' string_of_int |> print_endline;
-  (* prints: (2) *)
-
-(* bind your expression to a lambda *)
-{|SIIa|} "x"
+{|KIab|}
   |> Sk.derive |> Sk.to_string |> print_endline;
-  (* prints: (x(x)) *)
+  (* prints: (b) *)
+
+(* transform your expression into a lambda *)
+{l|SIIa|l} 1
+  |> Sk.derive' string_of_int |> Sk.to_string' string_of_int |> print_endline;
+  (* prints: (1(1)) *)
 
 (* ornithology: cardinals and larks (and more) are defined in the Birds module*)
 let open Birds in
-  {|Cabc|} "a" "b" "c"
+  {|Cabc|}
     |> Sk.derive |> Sk.to_string |> print_endline;
     (* prints: (ac(b)) *)
 
-  {|Lab|} "a" "b"
+  {|Lab|}
     |> Sk.derive |> Sk.to_string |> print_endline
     (* prints: (a(b(b))) *)
 ```

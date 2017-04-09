@@ -14,6 +14,9 @@ let string_to_expression s =
 let string_to_pattern s =
   {ppat_desc = Ppat_var {txt = s; loc = Location.none}; ppat_loc = Location.none; ppat_attributes = []}
 
+let string_to_constant s =
+  {pexp_desc = Pexp_constant (Const_string (s, None)); pexp_loc = Location.none; pexp_attributes = []}
+
 let rec embedd_sk_ast = function
   | `S -> [%expr `S]
   | `K -> [%expr `K]
@@ -44,6 +47,13 @@ let ski_mapper argv =
     expr = (fun mapper expr ->
       match expr with
         | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some ""))} ->
+            let sk = Sk.parse raw_ski in
+            let fv = Sk.free sk in
+            let rec wrap = function
+              | [] -> embedd_sk_ast sk
+              | v :: vs -> [%expr ((fun [%p string_to_pattern v] -> [%e wrap vs]) [%e string_to_constant v])] in
+            wrap fv
+        | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some "l"))} ->
             let sk = Sk.parse raw_ski in
             let fv = Sk.free sk in
             let rec wrap = function
