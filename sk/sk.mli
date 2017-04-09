@@ -10,3 +10,5 @@ val merge :
   ([< `K | `S | `Atom of 'b | `Combinator of string | `Tree of 'a list ] as 'a) ->
   ([< `K | `S | `Atom of 'b | `Combinator of string | `Tree of 'a list ] as 'a) ->
   ([> `K | `S | `Atom of 'b | `Combinator of string | `Tree of 'a list ] as 'a)
+
+val free: ([> `Atom of 'b | `Tree of 'a list ] as 'a) -> 'b list

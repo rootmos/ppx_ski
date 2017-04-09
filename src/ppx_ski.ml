@@ -44,7 +44,12 @@ let ski_mapper argv =
     expr = (fun mapper expr ->
       match expr with
         | { pexp_loc = loc; pexp_desc = Pexp_constant (Const_string (raw_ski, Some ""))} ->
-            Sk.parse raw_ski |> embedd_sk_ast
+            let sk = Sk.parse raw_ski in
+            let fv = Sk.free sk in
+            let rec wrap = function
+              | [] -> embedd_sk_ast sk
+              | v :: vs -> [%expr (fun [%p string_to_pattern v] -> [%e wrap vs])] in
+            wrap fv
         | x -> default_mapper.expr mapper x);
     structure_item = fun mapper str ->
       begin match str with

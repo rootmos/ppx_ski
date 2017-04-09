@@ -48,3 +48,9 @@ let rec embedd = function
 
 let parse s = Lexing.from_string s |> Ski_parser.expr Ski_lexer.read |> embedd
 
+let free ast =
+  let rec go = function
+    | `Atom s -> [s]
+    | `Tree ts -> List.map go ts |> List.flatten
+    | _ -> [] in
+  go ast |> List.sort_uniq Pervasives.compare
